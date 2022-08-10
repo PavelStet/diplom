@@ -1,26 +1,124 @@
-# diplom
-[План тестирования](https://github.com/PavelStet/diplom/blob/main/documents/plan.md)
+# Дипломный проект профессии «Тестировщик»
 
-### Запуск приложения
+Дипломный проект представляет собой автоматизацию тестирования комплексного сервиса, взаимодействующего с СУБД и API Банка.
 
-Для запуска приложения необходим **Docker**
+## Описание приложения
 
-**Примечание**: Приложение запускалось через Docker на локальной машине.
+### Бизнес часть
 
-* склонировать репозиторий ```https://github.com/PavelStet/diplom.git```
-* запустить docker container ```docker-compose up -d --force-recreate```.
-*   Дождаться пока контейнеры запустятся
-* в терминале IntelliJ IDEA запустить SUT:
-    - с использованием БД MySQL
-      командой ```java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar```
-    - с использованием БД PostgreSQL
-      командой ```java "-Dspring.datasource.url=jdbc:postgresql://localhost:5432/app" -jar artifacts/aqa-shop.jar```
-* запустить автотесты командой:
-    - для конфигурации БД MySql:  
-      ```./gradlew clean test "-Ddb.url=jdbc:mysql://localhost:3306/app" ```
-    - для конфигурации БД PostgreSQL:  
-      ```./gradlew clean test "-Ddb.url=jdbc:postgresql://localhost:5432/app" ```
+Приложение представляет из себя веб-сервис.
 
-* запустить отчеты командой:
+![](pic/service.png)
 
-```./gradlew allureServe (запуск и открытие отчетов)```
+Приложение предлагает купить тур по определённой цене с помощью двух способов:
+1. Обычная оплата по дебетовой карте
+1. Уникальная технология: выдача кредита по данным банковской карты
+
+Само приложение не обрабатывает данные по картам, а пересылает их банковским сервисам:
+* сервису платежей (далее - Payment Gate)
+* кредитному сервису (далее - Credit Gate)
+
+
+### Техническая часть
+
+Само приложение расположено в файле [`aqa-shop.jar`](aqa-shop.jar) и запускается стандартным способом `java -jar aqa-shop.jar` на порту 8080.
+
+В файле [`application.properties`](application.properties) приведён ряд типовых настроек:
+* учётные данные и url для подключения к СУБД
+* url-адреса банковских сервисов
+
+### СУБД
+
+Заявлена поддержка двух СУБД (вы это должны проверить):
+* MySQL
+* PostgreSQL
+
+Учётные данные и url для подключения задаются в файле [`application.properties`](application.properties).
+
+## Задача
+
+Автоматизация позитивных и негативных сценариев покупки тура.
+
+## Документация
+
+[Дипломное задание](https://github.com/netology-code/qa-diploma.git)
+
+[План автоматизации тестирования веб-формы сервиса покупки туров интернет-банка](https://github.com/PavelStet/diplom/blob/main/documents/plan.md)
+
+[Отчёт о проведенном тестировании](https://github.com/PavelStet/diplom/blob/main/documents/report.md)
+
+[Отчёт о проведённой автоматизации](https://github.com/PavelStet/diplom/blob/main/documents/summary.md)
+
+## Запуск приложения
+
+## Предварительно установленные компоненты:
+* IntelliJ IDEA Community Edition 2021.3.2
+* Docker Desktop 
+* Node.js 
+## Загруженные docker container images:
+* mysql:latest
+* postgres:latest
+* gate-simulator:1.0
+#### Команды для скачивания образов:
+##### Скачать MySql image:
+    docker pull mysql:latest
+    
+##### Скачать PostgreSql image:
+    docker pull postgres:latest
+
+### Подключение SUT к MySQL
+
+1. Запустить Docker Desktop
+1. Открыть проект в IntelliJ IDEA
+1. В терминале в корне проекта запустить контейнеры:
+
+   `docker-compose up -d`
+1. Запустить приложение:
+
+   `java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar`
+1. Открыть второй терминал
+1. Запустить тесты:
+
+   `.\gradlew clean test "-Ddb.url=jdbc:mysql://localhost:3306/app"`
+1. Создать отчёт Allure и открыть в браузере
+
+   `.\gradlew allureServe`
+1. Закрыть отчёт:
+
+   **CTRL + C -> y -> Enter**
+1. Перейти в первый терминал
+1. Остановить приложение:
+
+   **CTRL + C**
+1. Остановить контейнеры:
+
+   `docker-compose down`
+   </a>
+### Подключение SUT к PostgreSQL
+
+1. Запустить Docker Desktop
+1. Открыть проект в IntelliJ IDEA
+1. В терминале в корне проекта запустить контейнеры:
+
+   `docker-compose up -d`
+1. Запустить приложение:
+
+   `java "-Dspring.datasource.url=jdbc:postgresql://localhost:5432/app" -jar artifacts/aqa-shop.jar`
+1. Открыть второй терминал
+1. Запустить тесты:
+
+   `.\gradlew clean test "-Ddb.url=jdbc:postgresql://localhost:5432/app"`
+1. Создать отчёт Allure и открыть в браузере
+
+   `.\gradlew allureServe`
+1. Закрыть отчёт:
+
+   **CTRL + C -> y -> Enter**
+1. Перейти в первый терминал
+1. Остановить приложение:
+
+   **CTRL + C**
+1. Остановить контейнеры:
+
+   `docker-compose down`
+   </a>
